@@ -24,7 +24,7 @@
     "eslint-plugin-promise": "^6.1.1",
     "husky": "^8.0.0"
   },
-  "author": "Fran Linde",
+  "author": "Rodri",
   "license": "ISC",
   "dependencies": {
     "cors": "^2.8.5",

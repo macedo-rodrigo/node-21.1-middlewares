@@ -8,11 +8,26 @@ const router = express.Router();
 
 // CRUD: READ
 // EJEMPLO DE REQ: http://localhost:3000/car?page=1&limit=10
+
+// Routes middleware for params
+router.get("/", async (req, res, next) => {
+  console.log("the route middleware!");
+  const page = req.query.page ? parseInt(req.query.page) : 1;
+  const limit = req.query.limit ? parseInt(req.query.limit) : 10;
+
+  if (!isNaN(page) && !isNaN(limit) && page > 0 && limit > 0) {
+    req.query.page = page;
+    req.query.limit = limit;
+    next();
+  } else {
+    res.status(400).json({ error: "Params page or limit are not valid" });
+  }
+});
+
 router.get("/", async (req, res) => {
   try {
     // Asi leemos query params
-    const page = parseInt(req.query.page);
-    const limit = parseInt(req.query.limit);
+    const { page, limit } = req.query;
     const cars = await Car.find()
       .limit(limit)
       .skip((page - 1) * limit)

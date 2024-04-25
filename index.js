@@ -21,9 +21,10 @@ const main = async () => {
   );
 
   // Middlewares
-  app.use((req, res, next) => {
+  app.use((req, res, next) => { // as there is no routem that counts for all requests
     const date = new Date();
     console.log(`This a ${req.method} request to the URl ${req.originalUrl} at ${date}`);
+    next();
   })
 
   // Routes
