@@ -7,13 +7,17 @@ const router = express.Router();
 const upload = multer({ dest: "public" });
 
 router.post("/", upload.single("file"), (req, res, next) => {
-  const originalName = req.file.originalname;
-  const path = req.file.path;
+  try {
+    const originalName = req.file.originalname;
+    const path = req.file.path;
 
-  const newPath = path + "_" + originalName
+    const newPath = path + "_" + originalName;
 
-  fs.renameSync(path, newPath);
-  res.send("Fichero subido correctamente!");
+    fs.renameSync(path, newPath);
+    res.send("Fichero subido correctamente!");
+  } catch (error) {
+    next(error);
+  }
 });
 
 module.exports = { fileUploadRouter: router };

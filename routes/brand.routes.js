@@ -1,4 +1,8 @@
 const express = require("express");
+const fs = require("fs");
+const multer = require("multer");
+
+const upload = multer({ dest: "public" });
 
 // Modelos
 const { Brand } = require("../models/Brand.js");
@@ -116,6 +120,32 @@ router.put("/:id", async (req, res, next) => {
       res.json(brandUpdated);
     } else {
       res.status(404).json({});
+    }
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.post("/logo-upload", upload.single("logo"), async (req, res, next) => {
+  try {
+    // Rename the brand
+    const originalName = req.file.originalname;
+    const path = req.file.path;
+    const newPath = path + "_" + originalName;
+    fs.renameSync(path, newPath);
+
+    // searching the brand
+    const brandId = req.body.brandId;
+    const brand = await Brand.findById(brandId);
+
+    if (brand) {
+      brand.logoImage = newPath;
+      await brand.save();
+      res.json(brand);
+      console.log("Marca modificada con éxito!");
+    } else {
+      fs.unlinkSync(newPath);
+      res.status(404).send("Brand not found!");
     }
   } catch (error) {
     next(error);
