@@ -6,7 +6,26 @@ const { Brand } = require("../models/Brand.js");
 const router = express.Router();
 
 // CRUD: READ
-router.get("/", async (req, res) => {
+
+// Routes middleware for params
+router.get("/", async (req, res, next) => {
+  try {
+    const page = req.query.page ? parseInt(req.query.page) : 1;
+    const limit = req.query.limit ? parseInt(req.query.limit) : 10;
+
+    if (!isNaN(page) && !isNaN(limit) && page > 0 && limit > 0) {
+      req.query.page = page;
+      req.query.limit = limit;
+      next();
+    } else {
+      res.status(400).json({ error: "Params page or limit are not valid" });
+    }
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.get("/", async (req, res, next) => {
   try {
     // Asi leemos query params
     const page = parseInt(req.query.page);
@@ -27,13 +46,12 @@ router.get("/", async (req, res) => {
 
     res.json(response);
   } catch (error) {
-    console.error(error);
-    res.status(500).json(error);
+    next(error);
   }
 });
 
 // CRUD: READ
-router.get("/:id", async (req, res) => {
+router.get("/:id", async (req, res, next) => {
   try {
     const id = req.params.id;
     const brand = await Brand.findById(id);
@@ -43,13 +61,12 @@ router.get("/:id", async (req, res) => {
       res.status(404).json({});
     }
   } catch (error) {
-    console.error(error);
-    res.status(500).json(error);
+    next(error);
   }
 });
 
 // CRUD: Operación custom, no es CRUD
-router.get("/name/:name", async (req, res) => {
+router.get("/name/:name", async (req, res, next) => {
   const brandName = req.params.name;
 
   try {
@@ -60,29 +77,23 @@ router.get("/name/:name", async (req, res) => {
       res.status(404).json([]);
     }
   } catch (error) {
-    console.log(error);
-    res.status(500).json(error);
+    next(error);
   }
 });
 
 // CRUD: CREATE
-router.post("/", async (req, res) => {
+router.post("/", async (req, res, next) => {
   try {
     const brand = new Brand(req.body);
     const createdBrand = await brand.save();
     return res.status(201).json(createdBrand);
   } catch (error) {
-    console.error(error);
-    if (error?.name === "ValidationError") {
-      res.status(400).json(error);
-    } else {
-      res.status(500).json(error);
-    }
+    next(error);
   }
 });
 
 // CRUD: DELETE
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", async (req, res, next) => {
   try {
     const id = req.params.id;
     const brandDeleted = await Brand.findByIdAndDelete(id);
@@ -92,13 +103,12 @@ router.delete("/:id", async (req, res) => {
       res.status(404).json({});
     }
   } catch (error) {
-    console.error(error);
-    res.status(500).json(error);
+    next(error);
   }
 });
 
 // CRUD: UPDATE
-router.put("/:id", async (req, res) => {
+router.put("/:id", async (req, res, next) => {
   try {
     const id = req.params.id;
     const brandUpdated = await Brand.findByIdAndUpdate(id, req.body, { new: true, runValidators: true });
@@ -108,12 +118,7 @@ router.put("/:id", async (req, res) => {
       res.status(404).json({});
     }
   } catch (error) {
-    console.error(error);
-    if (error?.name === "ValidationError") {
-      res.status(400).json(error);
-    } else {
-      res.status(500).json(error);
-    }
+    next(error);
   }
 });
 

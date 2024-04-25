@@ -12,7 +12,7 @@
     "seed:car-relations": "node ./seeds/car-relations.seed.js",
     "seed:all": "npm run seed:users && npm run seed:cars && npm run seed:brands && npm run seed:car-relations",
     "start": "node --watch index.js",
-    "lint": "eslint",
+    "lint": "eslint .",
     "prepare": "husky install"
   },
   "devDependencies": {
