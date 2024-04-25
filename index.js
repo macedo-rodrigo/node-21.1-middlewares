@@ -41,6 +41,7 @@ const main = async () => {
   app.use("/user", userRouter);
   app.use("/car", carRouter);
   app.use("/brand", brandRouter);
+  app.use("/public", express.static("public"));
   app.use("/", router);
 
   // this one is to manage errors (the catch part of all routes)
