@@ -2,6 +2,7 @@ const express = require("express");
 const { userRouter } = require("./routes/user.routes.js");
 const { carRouter } = require("./routes/car.routes.js");
 const { brandRouter } = require("./routes/brand.routes.js");
+const { fileUploadRouter } = require("./routes/file-upload.routes.js");
 const cors = require("cors"); // CORS is a node.js package for providing a Connect/Express middleware that can be used to enable CORS with various options.
 
 const main = async () => {
@@ -42,6 +43,7 @@ const main = async () => {
   app.use("/car", carRouter);
   app.use("/brand", brandRouter);
   app.use("/public", express.static("public"));
+  app.use("/file-upload", fileUploadRouter);
   app.use("/", router);
 
   // this one is to manage errors (the catch part of all routes)
