@@ -137,4 +137,33 @@ router.put("/:id", async (req, res, next) => {
   }
 });
 
+// Users Login
+router.post("/login", async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
+
+    // If user and password are not entered
+    if (!email || !password) {
+      return res.status(400).json("Both email and password fields must be fulfilled");
+    }
+
+    // If the user and password have been filled in, we search for the user
+    const user = await User.findOne({ email }).select("+password");
+
+    // If the entered user is not found
+    if (!user) {
+      return res.status(404).json({ error: "There is no user with this email" });
+    }
+
+    // If the user is found AND the password is correct
+    if (user.password === password) {
+      return res.status(200).json(user);
+    } else {
+      return res.send(401).json({ error: "it seems that the e-mail and/or password you provided  is/are invalid" });
+    }
+  } catch (error) {
+    next(error);
+  }
+});
+
 module.exports = { userRouter: router };

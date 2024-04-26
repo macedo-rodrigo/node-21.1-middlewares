@@ -4,6 +4,8 @@ const { User } = require("../models/User.js");
 
 const userList = [
   {
+    email: "fran@gmail.com",
+    password: "12345678",
     firstName: "Fran",
     lastName: "Linde",
     phone: "123123123",
@@ -13,8 +15,15 @@ const userList = [
       city: "Ávila",
     },
   },
-  { firstName: "Edu", lastName: "Cuadrado" },
   {
+    email: "edu@gmail.com",
+    password: "1234567812",
+    firstName: "Edu",
+    lastName: "Cuadrado",
+  },
+  {
+    email: "gon@gmail.com",
+    password: "1234567887",
     firstName: "Gon",
     lastName: "Fernández",
     phone: "666777888",
